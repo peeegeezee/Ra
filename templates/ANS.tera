@@ -1,0 +1,180 @@
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service call-home
+service unsupported-transceiver
+platform punt-keepalive disable-kernel-core
+!
+hostname {{ hostname }}
+!
+!
+vrf definition Mgmt-vrf
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+logging userinfo
+aaa new-model
+!
+!
+aaa authentication login default local
+aaa authorization console
+aaa authorization exec default local
+!
+!
+aaa session-id common
+boot system bootflash:packages.conf
+!
+ip name-server vrf Mgmt-vrf 10.255.255.253 10.255.255.254
+ip domain name {{ system.domain }}
+!
+!
+!
+login on-success log
+!
+!
+stackwise-virtual
+ domain 10
+!
+!
+!
+license boot level network-advantage addon dna-advantage
+archive
+ log config
+  logging enable
+memory free low-watermark processor 288996
+!
+diagnostic bootup level minimal
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+!
+no errdisable detect cause gbic-invalid
+!
+enable secret 9 $9$UacdHgqAkILqMk$AgpEpXYrFe5Mg9L0DBmWRgJ8H9fhlUEEdK4HWfJH3EA
+!
+username netadmin privilege 15 secret 9 $9$rwZf6Tg1yG.RW.$Jm1UBttrrWo9J4MQXp0RXSjMOL7/eL165ZWxTFqIkPM
+!
+redundancy
+ mode sso
+crypto engine compliance shield disable
+!
+!
+!
+!
+!
+transceiver type all
+ monitoring
+!
+vlan 15
+ name v15.{{ site }}-usr-tr
+!
+vlan 16
+ name v15.{{ site }}-vvoip-tr
+!
+vlan 17
+ name v17.{{ site }}-ptr-tr
+!
+ip access-list extended allow-vvoip
+ permit ip 10.0.2.0 0.255.0.255
+!
+service-template allow-vvoip
+ access-group allow-vvoip
+!
+policy-map type control subscriber DOT1X-DEFAULT
+ event session-started match-all
+  10 class always do-all
+   10 authenticate using dot1x priority 10
+   20 authenticate using mab priority 20
+ event violation match-all
+  10 class always do-all
+   10 restrict
+ event agent-found match-all
+  10 class always do-all
+   10 authenticate using dot1x
+ event authentication-failure match-all
+  10 class AAA-DOWN do-all
+   10 authorize
+   20 activate service-template allow-vvoip
+   30 terminate dot1x
+   40 terminate mab
+  20 class DOT1X-FAILED do-all
+   10 authenticate using mab
+!
+!
+template dot1x
+ storm-control broadcast level pps 1k
+ storm-control action shutdown
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+ spanning-tree guard root
+ switchport access vlan 15
+ switchport mode access
+ switchport voice vlan 16
+ service-policy input MARKING
+ service-policy output 2P6Q3T-WRED
+ service-policy type control subscriber DOT1X-DEFAULT
+ description DOT1X
+template uplink
+ ip dhcp snooping trust
+ ip arp inspection trust
+ spanning-tree portfast netwrok
+ switchport mode trunk
+ switchport native vlan 3
+ service-policy output 2P6Q3T-WRED
+!
+!
+interface Loopback0
+ ip address 172.30.{{ site_ip }}.{{ instance }} 255.255.255.255
+ ip ospf 1 area 0.0.0.{{ site_ip }}
+!
+{% for interface in interfaces %}
+interface {{ interface.Name }}
+ source template {{ interface.Template }}
+{% endfor %}
+{% for uplink in uplinks %}
+interface {{ uplink.Name }}
+ source template uplink
+ description {{ uplink.description }}
+ switchport trunk allowed vlan {{ uplink.vlan }}
+ speed nonegotiate
+ fec cl91
+{% endfor %}
+!
+interface HundredGigE1/0/51
+ stackwise-virtual link 1
+ description STACKWISE VIRTUAL LINK 1
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+interface Vlan15
+ description v15.{{ site }}-usr-tr
+ ip address 10.{{ site_ip }}.1.1 255.255.255.128
+ ip ospf 1 area 0.0.0.{{ site_ip }}
+!
+interface Vlan16
+ description v16.{{ site }}-vvoip-tr
+ ip address 10.{{ site_ip }}.2.1 255.255.255.128
+ ip ospf 1 area 0.0.0.{{ site_ip }}
+!
+interface Vlan17
+ description v17.{{ site }}-ptr-tr
+ ip address 10.{{ site_ip }}.1.1 255.255.255.248
+ ip ospf 1 area 0.0.0.{{ site_ip }}
+!
+{% for vlan in vlans %}
+interface Vlan{{ vlan.Id }}
+ description {{ vlan.Name }}
+ ip address {{ vlan.Ip }} {{ vlan.Subnet }}
+ ip ospf 1 area 0.0.0.{{ site_ip }}
+{% endfor %}
+router ospf 1
+ passive-interface Vlan15
+ passive-interface Vlan16
+ passive-interface Vlan17
+!

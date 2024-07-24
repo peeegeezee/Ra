@@ -1,0 +1,22 @@
+aaa authentication login default group noc-auth local
+aaa authorization console
+aaa authorization exec default group noc-auth local if-authenticated
+aaa accounting commands 15 default start-stop group noc-auth
+aaa accounting commands 5 default start-stop group noc-auth
+aaa accounting exec default start-stop group noc-auth
+aaa accounting system default start-stop group noc-auth
+!
+!
+aaa common-criteria policy PASSWORD_POLICY
+ min-length 15
+ max-length 127
+ numeric-count 1
+ upper-case 1
+ lower-case 1
+ special-case 1
+ char-changes 8
+!
+!
+aaa session-id common
+!
+username netadmin privilege 15 common-criteria-policy PASSWORD_POLICY secret 8 $8$vHeyjK7lMlp6sE$/7vXCSQ1zcD1tk8OkjbxHbAki2.1PiR3IojmXm4ak4g

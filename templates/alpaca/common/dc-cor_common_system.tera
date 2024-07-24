@@ -1,0 +1,31 @@
+hostname {{ system.site }}-DC-COR-{{ system.instance }}
+!
+vdc {{ system.site }}-DC-COR-{{ system.instance }} id 1
+  limit-resource vlan minimum 16 maximum 4094
+  limit-resource vrf minimum 2 maximum 4096
+  limit-resource port-channel minimum 0 maximum 511
+  limit-resource m4route-mem minimum 58 maximum 58
+  limit-resource m6route-mem minimum 8 maximum 8
+!
+!
+username admin password 5 $5$/hFVQtEi$NGxeUTb/TLJfcwL/H61SEMzi29/EK1quaaVGkE1xqS0  role network-admin
+username netadmin password 5 $5$z.yTPbGy$WLqd4Ke4DobemWKKz.GSqnvbmtQtDuHgumpE/vUzQb9  role priv-15
+username netadmin passphrase  lifetime 99999 warntime 14 gracetime 3
+!
+ssh key rsa 4096
+!
+ip domain-lookup
+ip domain-name {{ system.domain }}
+ip name-server 10.255.255.253 10.255.255.254 use-vrf management
+crypto key generate rsa label {{ system.site }}-DC-COR-{{ system.instance }} modulus 4096
+!
+ip dns source-interface mgmt0 vrf management
+!
+service dhcp
+ip dhcp relay
+ipv6 dhcp relay
+vrf context management
+  ip name-server 10.255.255.253 10.255.255.254
+!
+cli alias name wr copy run start
+!

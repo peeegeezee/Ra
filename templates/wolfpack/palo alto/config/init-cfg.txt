@@ -1,0 +1,9 @@
+type=static
+ip-address={{ mgmt_ip }}
+default-gateway={{ mgmt_gw }}
+netmask={{ mgmt_subnet_mask }}
+hostname={{ hostname }}
+vm-auth-key={{ panorama_auth_key }}
+panorama-server={{ panorama_ip }}
+dns-primary=10.255.255.253
+dns-secondary=10.255.255.254

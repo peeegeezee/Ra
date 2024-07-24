@@ -1,0 +1,25 @@
+{
+    "main": {
+      "site": "E12",
+      "site_ip": "12",
+      "domain": "angel.net",
+      "isp_info": {
+        "pe_ip_address": "98.147.11.202",
+        "pe_gw_address": "98.147.11.201",
+        "isp_subnet": {
+          "subnet": "98.147.11.200",
+          "cidr": "/29",
+          "netmask": "255.255.255.248"
+        },
+        "upload": "30000000",
+        "download": "750000000"
+      }
+    },
+    "devices": [
+      {
+        "name": "PE-001v",
+        "template": "pe",
+        "fabric": "wolfpack"
+      }
+    ]
+  }

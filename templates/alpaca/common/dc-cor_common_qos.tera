@@ -1,0 +1,32 @@
+!
+class-map type network-qos ROCE_NETWORK_CLASS
+  match qos-group 3
+policy-map type network-qos ROCE_NETWORK_POLICY
+  class type network-qos ROCE_NETWORK_CLASS
+    pause pfc-cos 3
+    mtu 9216
+  class type network-qos c-8q-nq-default
+    mtu 9216
+!
+class-map type qos match-all ROCE_CLASS
+  match cos 3
+  match dscp 26
+policy-map type qos ROCE_POLICY
+  class ROCE_CLASS
+    set qos-group 3
+policy-map type queuing ROCE_QUEUING_OUT
+  class type queuing c-out-8q-q3
+    bandwidth remaining percent 50
+    random-detect minimum-threshold 150 kbytes maximum-threshold 3000 kbytes drop-probability 7 weight 0 ecn
+  class type queuing c-out-8q-q2
+    bandwidth remaining percent 0
+  class type queuing c-out-8q-q1
+    bandwidth remaining percent 0
+  class type queuing c-out-8q-q-default
+    bandwidth remaining percent 50
+!
+system qos
+  service-policy type network-qos ROCE_NETWORK_POLICY
+!
+priority-flow-control watch-dog-interval on
+!

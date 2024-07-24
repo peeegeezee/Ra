@@ -1,0 +1,40 @@
+{
+    "system": {
+      "domain": "{{ domain }}",
+      "site": "{{ site }}",
+      "site_ip": "{{ site_ip }}",
+      "instance": "001",
+      "router_id": "172.30.{{ site_ip }}.71/32"
+    },
+    "router_type": "rs",
+    "instance": 1,
+    "hostname": "{{ site | lower }}-rs-001v",
+    "interfaces" : [
+      {
+        "name": "GigabitEthernet1",
+        "description": "OOBM Port",
+        "vrf": "oobm-int",
+        "ip_address": "172.17.{{ site_ip }}.71 255.255.255.0"
+      },
+      {
+        "name": "GigabitEthernet2",
+        "description": "ANGEL-EXT",
+        "ip_address": "10.{{ site_ip }}.229.11 255.255.255.248",
+        "mtu": "1400",
+        "tcp_mss": "1360",
+        "ospf": {
+          "area": "0.0.0.0",
+          "instance": "1"
+        }
+      },
+      {
+        "name": "Loopback0",
+        "description": "Router ID",
+        "ospf": {
+          "area": "0.0.0.0",
+          "instance": "1"
+        },
+        "ip_address": "172.30.{{ site_ip }}.71 255.255.255.255"
+      }
+    ]
+  }

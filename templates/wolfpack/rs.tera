@@ -1,0 +1,108 @@
+{% include ["ios-xe_common/services.tera"] %}
+{% include ["ios-xe_common/8000v_platform.tera"] %}
+!
+hostname {{ system.site | lower }}-rs-001v
+!
+!
+vrf definition oobm-int
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+ip name-server vrf oobm-int 10.255.255.253 10.255.255.254
+!
+{% include ["ios-xe_common/pre_aaa.tera"] %}
+!
+aaa group server radius noc
+{% include ["ios-xe_common/radius_servers.tera"] %}
+ ip vrf forwarding oobm-int
+ ip radius source-interface GigabitEthernet1
+!
+aaa group server tacacs+ noc-auth
+{% include ["ios-xe_common/tacacs_servers.tera"] %}
+ ip vrf forwarding oobm-int
+ ip tacacs source-interface GigabitEthernet1
+!
+{% include ["ios-xe_common/post_aaa.tera"] %}
+!
+no ip gratuitous-arps
+!
+{% include ["ios-xe_common/system.tera"] %}
+!
+subscriber templating
+ipv6 unicast-routing
+!
+pae
+!
+!
+license boot level network-advantage addon dna-advantage
+license smart transport smart
+license smart vrf oobm-int
+!
+!
+spanning-tree extend system-id
+!
+!
+!
+redundancy
+!
+{%- for interface in interfaces %}
+interface {{ interface.name }}
+ description {{ interface.description }}
+ {%- if interface.vrf %}
+ vrf forwarding {{ interface.vrf }}
+ {%- endif %}
+ ip address {{ interface.ip_address }}
+ negotiation auto
+ no mop enabled
+ no mop sysid
+ {%- if interface.mtu %}
+ ip mtu {{ interface.mtu }}
+ {%- endif -%}
+ {%- if interface.tcp_mss %}
+ ip tcp adjust-mss {{ interface.tcp_mss }}
+ {%- endif -%}
+ {%- if interface.ospf %}
+ ip ospf {{ interface.ospf.instance }} area {{ interface.ospf.area }}
+ {%- endif -%}
+{%- endfor %}
+!
+router ospf 1
+ router-id 172.30.{{ system.site_ip }}.71
+!
+router bgp 64999
+ bgp router-id interface Loopback0
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ neighbor route-server-client peer-group
+ neighbor route-server-client timers 10 30
+ neighbor 10.{{ system.site_ip }}.229.9 remote-as 65000
+ neighbor 10.{{ system.site_ip }}.229.9 peer-group route-server-client
+ neighbor 10.{{ system.site_ip }}.229.10 remote-as 65101
+ neighbor 10.{{ system.site_ip }}.229.10 peer-group route-server-client
+ neighbor 10.{{ system.site_ip }}.229.19 remote-as 6490{{ system.site_ip }}
+ neighbor 10.{{ system.site_ip }}.229.19 peer-group route-server-client
+ neighbor 10.{{ system.site_ip }}.229.19 ebgp-multihop 2
+ !
+ address-family ipv4
+  neighbor route-server-client route-server-client
+  neighbor 10.{{ system.site_ip }}.229.9 activate
+  neighbor 10.{{ system.site_ip }}.229.10 activate
+  neighbor 10.{{ system.site_ip }}.229.19 activate
+ exit-address-family
+!
+ip forward-protocol nd
+!
+no ip http server
+ip http authentication local
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 GigabitEthernet1 10.{{ system.site_ip }}.229.9
+ip route vrf oobm-int 0.0.0.0 0.0.0.0 172.17.{{ system.site_ip }}.1
+control-plane
+!
+!
+{% include ["ios-xe_common/line_info.tera"] %}
+{% include ["ios-xe_common/ssh.tera"] %}

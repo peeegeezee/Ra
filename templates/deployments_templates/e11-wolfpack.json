@@ -1,0 +1,38 @@
+{
+    "main": {
+      "site": "E11",
+      "site_ip": "11",
+      "domain": "angel.net",
+      "isp_info": {
+        "pe_ip_address": "",
+        "pe_gw_address": "",
+        "isp_subnet": {
+          "subnet": "",
+          "cidr": "/29",
+          "netmask": "255.255.255.248"
+        },
+        "upload": "1000000000",
+        "download": "1000000000"
+      }
+    },
+    "devices": [
+      {
+        "input_name": "PE-001v",
+        "template": "pe",
+        "fabric": "wolfpack",
+        "hostname": "e11-pe-001v"
+      },
+      {
+        "input_name": "RS-001v",
+        "template": "rs",
+        "fabric": "wolfpack",
+        "hostname": "e11-rs-001v"
+      },
+      {
+        "input_name": "WP-DC-SVC-001",
+        "template": "wp-dc-svc",
+        "fabric": "wolfpack",
+        "hostname": "e11-dc-svc-001s"
+      }
+    ]
+  }

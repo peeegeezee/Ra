@@ -1,0 +1,20 @@
+ip access-list extended {{ system.site | lower }}-internet-in-v1
+ 10 deny ip object-group bogon object-group {{ system.site | lower }}-wan log-input
+ 11 permit icmp any any packet-too-big
+ 12 permit icmp host 8.8.8.8 any log-input
+ 20 permit icmp any any time-exceeded log-input
+ 30 remark IPSEC_GRE_ESP_FROM remote-sites
+ 30 permit icmp object-group remote-sites object-group {{ system.site | lower }}-wan
+ 40 permit esp object-group remote-sites object-group {{ system.site | lower }}-wan
+ 50 permit udp object-group remote-sites object-group {{ system.site | lower }}-wan eq isakmp
+ 60 permit gre object-group remote-sites object-group {{ system.site | lower }}-wan
+ 70 remark DNS RETURN
+ 70 permit udp object-group dns eq domain object-group {{ system.site | lower }}-wan
+ 80 remark SSH from other sites
+ 80 permit tcp object-group remote-sites object-group {{ system.site | lower }}-wan eq 22
+ 81 permit ip object-group remote-sites object-group {{ system.site | lower }}-wan
+ 90 remark NIST NTP RETURN
+ 90 permit udp object-group nist-ntp-servers eq ntp object-group {{ system.site | lower }}-wan
+ 180 remark allow established
+ 180 permit tcp any any established
+ 190 deny ip any any log-input

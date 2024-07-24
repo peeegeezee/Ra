@@ -1,0 +1,5 @@
+platform qfp utilization monitor load 80
+platform punt-keepalive disable-kernel-core
+platform sslvpn use-pd
+platform console virtual
+platform hardware throughput level MB 1000

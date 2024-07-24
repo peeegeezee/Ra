@@ -1,0 +1,74 @@
+{% for interface in interfaces %}
+interface {{ interface.name }}
+  {%- if interface.switchport %}
+  switchport
+  switchport mode {{ interface.switchport.mode }}
+    {%- if interface.switchport.trunk.allowed_vlans %}
+  switchport trunk allowed vlan {{ interface.switchport.trunk.allowed_vlans }}
+    {%- endif -%}
+    {%- if interface.switchport.trunk.native_vlan %}
+  switchport trunk native vlan {{ interface.switchport.trunk.native_vlan }}
+    {%- endif -%}
+    {%- if interface.switchport.access.vlan %}
+  switchport access vlan {{ interface.switchport.access.vlan }}
+    {%- endif -%}
+  {%- endif -%}
+  {%- if interface.mtu %}
+  mtu {{ interface.mtu }}
+  {%- endif -%}
+  {%- if interface.shutdown == false %}
+  no shutdown
+  {%- elif interface.shutdown == true %}
+  shutdown
+  {%- endif -%}
+  {%- if interface.description %}
+  description {{ interface.description }}
+  {%- endif -%}
+  {%- if interface.service_policies.qos.input %}
+  service-policy type qos input {{ interface.service_policies.qos.input }}
+  {%- endif -%}
+  {%- if interface.service_policies.qos.output %}
+  service-policy type qos output {{ interface.service_policies.qos.output }}
+  {%- endif -%}
+  {%- if interface.service_policies.queuing.input %}
+  service-policy type queuing input {{ interface.service_policies.queuing.input }}
+  {%- endif -%}
+  {%- if interface.service_policies.queuing.output %}
+  service-policy type queuing output  {{ interface.service_policies.queuing.output }}
+  {%- endif -%}
+  {%- if interface.ospf.passive %}
+  ip ospf passive-interface
+  {%- endif -%}
+  {%- if interface.ospf.network_type %}
+    {%- if interface.ospf.network_type == "ptp" %}
+  ip ospf network point-to-point
+    {%- endif -%}
+  {%- endif -%}
+  {%- if interface.ospf.instance and interface.ospf.area %}
+  ip router ospf {{ interface.ospf.instance }} area {{ interface.ospf.area }}
+  {%- endif -%}
+  {%- if interface.ip_address %}
+  ip address {{ interface.ip_address }}
+  {%- endif -%}
+  {%- if interface.vrrp %}
+  vrrp3 {{ interface.vrrp.group }} address-family ipv4
+  {%- endif -%}
+  {%- if interface.vrrp.priority %}
+    priority {{ interface.vrrp.priority }}
+  {%- endif -%}
+  {%- if interface.vrrp.primary_address %}
+    address {{ interface.vrrp.primary_address }} primary
+  {%- endif -%}
+  {%- if interface.dhcp_relays %}
+  {%- for dhcp_relay in interface.dhcp_relays %}
+  ip dhcp relay address {{ dhcp_relay }}
+  {%- endfor %}
+  {%- endif -%}
+  {%- if interface.channel_group %}
+  channel-group {{ interface.channel_group }}
+  {%- endif -%}
+{%- endfor %}
+interface mgmt0
+  media-type sfp
+  vrf member management
+  ip address dhcp

@@ -1,0 +1,36 @@
+{#- Start STIGs -#}
+{#- V-220503 and V-220504 #}
+fips mode enable
+!
+{#- V-220493 #}
+line console
+ exec-timeout 5
+line vty 
+ exec-timeout 5 
+!
+{#- V-220486 #}
+feature ospf
+feature bgp
+feature interface-vlan
+feature dhcp
+feature lldp
+feature bfd
+feature vrrpv3
+{#- V-220689 #}
+feature udld
+{#- V-220682 #}
+!
+spanning-tree loopguard default
+{#- V-220688 #}
+!
+ip igmp snooping
+{#- V-220510 #}
+!
+logging level authpri 6
+{#- NO ID #}
+logging logfile LOGFILE1 6 size 12000
+logging server siem.ia.{{ system.domain }}
+logging server siem2.ia.{{ system.domain }}
+{#- End STIGs #}
+!
+!

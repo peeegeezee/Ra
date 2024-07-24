@@ -1,0 +1,100 @@
+{
+  "system": {
+    "domain": "{{ domain }}",
+    "site": "{{ site }}",
+    "site_ip": "{{ site_ip }}",
+    "instance": "001",
+    "router_id": "172.30.{{ site_ip }}.250/32"
+  },
+  "router_type": "pe",
+  "instance": 1,
+  "hostname": "{{ site | lower }}-PE-001v",
+  "interfaces" : [
+    {
+      "name": "GigabitEthernet1",
+      "description": "OOBM Port",
+      "vrf": "oobm-int",
+      "ip_address": "172.17.{{ site_ip }}.100 255.255.255.0"
+    },
+    {
+      "name": "GigabitEthernet2",
+      "description": "ISP Circuit",
+      "vrf": "internet",
+      "ip_address": "{{ isp_info.pe_ip_address }} {{ isp_info.isp_subnet.netmask }}",
+      "service_policies": {
+        "qos": {
+          "out": "QOS_Policy"
+        }
+      }
+    },
+    {
+      "name": "GigabitEthernet3",
+      "description": "HAIPE VRF",
+      "vrf": "haipe",
+      "ip_address": "172.18.{{ site_ip }}.1 255.255.255.0",
+      "mtu": "1400",
+      "tcp_mss": "1360"
+    },
+    {
+      "name": "GigabitEthernet4",
+      "description": "ANGEL BDR",
+      "vrf": "internet",
+      "ip_address": "10.{{ site_ip }}.229.1 255.255.255.248",
+      "ospf": {
+        "area": "0.0.0.0",
+        "instance": "2"
+      }
+    },
+    {
+      "name": "GigabitEthernet5",
+      "description": "ANGEL VRF",
+      "vrf": "angel",
+      "ip_address": "10.{{ site_ip }}.229.9 255.255.255.248",
+      "mtu": "1400",
+      "tcp_mss": "1360",
+      "ospf": {
+        "area": "0.0.0.0",
+        "instance": "3"
+      }
+    },
+    {
+      "name": "GigabitEthernet6",
+      "description": "ESS VRF",
+      "vrf": "ess",
+      "ip_address": "10.255.{{ site_ip }}.1 255.255.255.252",
+      "mtu": "1400",
+      "tcp_mss": "1360",
+      "ospf": {
+        "area": "0.0.0.0",
+        "instance": "627"
+      }
+    },
+    {
+      "name": "Loopback0",
+      "description": "SR Router ID",
+      "ospf": {
+        "area": "0.0.0.0",
+        "instance": "1"
+      },
+      "ip_address": "172.30.{{ site_ip }}.250 255.255.255.255"
+    }
+  ],
+  "segment_routing": {
+    {% if site_ip | int < 10 %}
+    "global_sid": "1790{{ site_ip  }}"
+    {% elif site_ip | int < 100 and site_ip | int > 9 %}
+    "global_sid": "179{{ site_ip  }}"
+    {% endif %}
+  },
+  "isp_circuit_info": {
+    "pe_ip_address": "{{ isp_info.pe_ip_address }}",
+    "pe_gw_address": "{{ isp_info.pe_gw_address }}",
+    "isp_subnet": {
+      "subnet": "{{ isp_info.isp_subnet.subnet }}",
+      "cidr": "{{ isp_info.isp_subnet.cidr }}",
+      "netmask": "{{ isp_info.isp_subnet.netmask }}"
+    },
+    "upload": "{{ isp_info.upload }}",
+    "download": "{{ isp_info.download }}"
+  }
+}

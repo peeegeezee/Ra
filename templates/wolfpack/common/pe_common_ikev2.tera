@@ -1,0 +1,55 @@
+crypto ikev2 proposal suite-b
+ encryption aes-gcm-256
+ prf sha384
+ group 20
+!
+crypto ikev2 policy suite-b
+ proposal suite-b
+!
+crypto ikev2 keyring suite-b
+ peer E10-COAX
+  description E10 COAX
+  address 98.153.118.138
+  pre-shared-key Unl0ck$me
+ !
+ peer E10-FIBER
+  description E10 FIBER
+  address 98.147.37.2
+  pre-shared-key Unl0ck$me
+ !
+ peer E1-MAIN
+  description E1 MAIN
+  address 216.54.101.230
+  pre-shared-key Unl0ck$me
+ !
+ peer E08-PE
+  description E08-PE-001
+  address 47.44.188.202
+  pre-shared-key Unl0ck$me
+ !
+ peer 98.147.11.203
+  description E02-PE-001
+  address 98.147.11.203
+  pre-shared-key Unl0ck$me
+ peer 98.147.11.202
+  description E02-PE-001
+  address 98.147.11.202
+  pre-shared-key Unl0ck$me
+!
+!
+crypto ikev2 profile suite-b
+ match identity remote any
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local suite-b
+ lifetime 3600
+ dpd 10 2 on-demand
+ !
+ crypto ipsec transform-set ESP_GCM esp-gcm 256
+ mode tunnel
+no crypto ipsec nat-transparency udp-encapsulation
+!
+crypto ipsec profile suite-b
+ set transform-set ESP_GCM
+ set pfs group20
+ set ikev2-profile suite-b

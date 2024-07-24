@@ -1,0 +1,5 @@
+clock timezone UTC 0 0
+service timestamps log datetime msec localtime show-timezone year
+service timestamps debug datetime msec localtime show-timezone year
+service call-home
+service unsupported-transceiver

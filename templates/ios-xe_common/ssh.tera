@@ -1,0 +1,7 @@
+ip ssh version 2
+ip ssh authentication-retries 3
+ip ssh dh min size 4096
+ip ssh server algorithm encryption aes256-gcm aes256-ctr
+ip ssh server algorithm kex ecdh-sha2-nistp521 ecdh-sha2-nistp384
+ip ssh server algorithm mac hmac-sha2-512
+crypto key generate rsa modulus 4096

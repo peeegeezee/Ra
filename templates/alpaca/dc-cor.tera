@@ -1,0 +1,6 @@
+{% include ["common/dc-cor_common_system.tera"] %}
+{% include ["common/dc-cor_common_qos.tera"] %}
+{% include ["common/dc-cor_common_stigs.tera"] %}
+{% include ["common/dc-cor_common_vlans.tera"] %}
+{% include ["common/dc-cor_common_interfaces.tera"] %}
+{% include ["common/dc-cor_common_routing.tera"] %}

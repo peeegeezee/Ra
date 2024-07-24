@@ -1,0 +1,6 @@
+{% include ["common/dc-svc_common_system.tera"] %}
+{% include ["common/dc-svc_common_qos.tera"] %}
+{% include ["common/dc-svc_common_stigs.tera"] %}
+{% include ["common/dc-svc_common_vlans.tera"] %}
+{% include ["common/dc-svc_common_interfaces.tera"] %}
+{% include ["common/dc-svc_common_routing.tera"] %}

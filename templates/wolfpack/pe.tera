@@ -1,0 +1,341 @@
+{% include ["ios-xe_common/services.tera"] %}
+{% include ["ios-xe_common/8000v_platform.tera"] %}
+!
+hostname {{ system.site | lower }}-pe-001v
+!
+!
+vrf definition internet
+ rd 172.30.{{ system.site_ip }}.250:1000
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition vvoip
+ rd 172.30.{{ system.site_ip }}.250:1005
+ route-target export 65000:1005
+ route-target import 65000:1005
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition angel
+ rd 172.30.{{ system.site_ip }}.250:1003
+ route-target export 65000:1003
+ route-target import 65000:1003
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition ess
+ rd 172.30.{{ system.site_ip }}.250:1004
+ route-target export 65000:1004
+ route-target import 65000:1004
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition haipe
+ rd 172.30.{{ system.site_ip }}.250:1002
+ route-target export 65000:1002
+ route-target import 65000:1002
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition oobm
+ rd 172.30.{{ system.site_ip }}.250:1001
+ route-target export 65000:1001
+ route-target import 65000:1001
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+vrf definition oobm-int
+ address-family ipv4
+ exit-address-family
+ !
+ address-family ipv6
+ exit-address-family
+!
+!
+{% include ["ios-xe_common/pre_aaa.tera"] %}
+!
+aaa group server radius noc
+{% include ["ios-xe_common/radius_servers.tera"] %}
+ ip vrf forwarding oobm-int
+ ip radius source-interface GigabitEthernet1
+!
+aaa group server tacacs+ noc-auth
+{% include ["ios-xe_common/tacacs_servers.tera"] %}
+ ip vrf forwarding oobm-int
+ ip tacacs source-interface GigabitEthernet1
+!
+{% include ["ios-xe_common/post_aaa.tera"] %}
+!
+no ip gratuitous-arps
+!
+{% include ["ios-xe_common/system.tera"] %}
+{% include ["ios-xe_common/bgp_keychain.tera"] %}
+!
+subscriber templating
+ipv6 unicast-routing
+!
+pae
+!
+!
+license boot level network-advantage addon dna-advantage
+license smart transport smart
+license smart vrf oobm-int
+!
+!
+spanning-tree extend system-id
+!
+!
+!
+redundancy
+!
+!
+class-map match-any CONTROL-MGMT-QUEUE
+ match dscp cs7
+ match dscp cs6
+ match dscp cs3
+ match dscp cs2
+class-map match-all PREFERRED_DATA
+ match ip dscp af33
+class-map match-any SCAVENGER-BULK-DATA-QUEUE
+ match dscp af11
+ match dscp af12
+ match dscp af13
+ match dscp cs1
+class-map match-any PQ1
+ match dscp ef
+ match dscp 47
+class-map match-any PQ2
+ match dscp cs4
+ match dscp cs5
+class-map match-any AF3-QUEUE
+ match dscp af31
+ match dscp af32
+ match dscp af33
+class-map match-any AF2-QUEUE
+ match dscp af21
+ match dscp af22
+ match dscp af23
+class-map match-all CONTROL_PLANE
+ match ip dscp cs6
+class-map match-any AF4-QUEUE
+ match dscp af41
+ match dscp af42
+ match dscp af43
+class-map match-all VIDEO
+ match ip dscp af41
+class-map match-all VOICE
+ match ip dscp ef
+class-map match-all mpls-exp-5
+ match mpls experimental topmost 5
+class-map match-all SCAVENGER
+ match ip dscp cs1
+class-map match-all C2_VOICE
+ match ip dscp 47
+!
+policy-map QOS_Policy
+ class mpls-exp-5
+  police cir 950000000 pir 1000000000 conform-action transmit  exceed-action transmit  violate-action transmit
+ class PQ1
+  police cir 30000000 pir 100000000 conform-action transmit  exceed-action transmit  violate-action transmit
+ class class-default
+  police cir 100000000 pir 1000000000 conform-action transmit  exceed-action transmit  violate-action drop
+!
+!
+!
+{%- for interface in interfaces %}
+interface {{ interface.name }}
+ description {{ interface.description }}
+ {%- if interface.vrf %}
+ vrf forwarding {{ interface.vrf }}
+ {%- endif %}
+ {%- if interface.name == "GigabitEthernet2" and interface.vrf == "internet" %}
+ ip nat outside
+ {%- endif %}
+ {%- if interface.name == "GigabitEthernet4" and interface.vrf == "internet" %}
+ ip nat inside
+ {%- endif %}
+ ip address {{ interface.ip_address }}
+ negotiation auto
+ no mop enabled
+ no mop sysid
+ {%- if interface.mtu %}
+ ip mtu {{ interface.mtu }}
+ {%- endif -%}
+ {%- if interface.tcp_mss %}
+ ip tcp adjust-mss {{ interface.tcp_mss }}
+ {%- endif -%}
+ {%- if interface.ospf %}
+ ip ospf {{ interface.ospf.instance }} area {{ interface.ospf.area }}
+ {%- endif -%}
+{%- endfor %}
+!
+segment-routing mpls
+ !
+ set-attributes
+  address-family ipv4
+   sr-label-preferred
+  exit-address-family
+ !
+ !
+ connected-prefix-sid-map
+  address-family ipv4
+   172.30.{{ system.site_ip }}.250/32 absolute {{ segment_routing.global_sid }} range 1
+  exit-address-family
+ !
+!
+router ospf 627 vrf ess
+ redistribute bgp 65000 tag 65000
+ default-information originate
+!
+router ospf 1
+ router-id 172.30.{{ system.site_ip }}.250
+ segment-routing area 0.0.0.0 mpls
+ segment-routing mpls
+!
+router ospf 2
+ default-information originate
+!
+router bgp 65000
+ no bgp enforce-first-as
+ bgp router-id 172.30.{{ system.site_ip }}.250
+ bgp log-neighbor-changes
+ no bgp default ipv4-unicast
+ neighbor rr-server-ao peer-group
+ neighbor rr-server-ao remote-as 65000
+ neighbor rr-server-ao ao BGP_CHAIN
+ neighbor rr-server-ao update-source Loopback0
+ neighbor rr-server-ao timers 10 30
+ neighbor 172.30.1.0 peer-group rr-server-ao
+ neighbor 172.30.10.0 peer-group rr-server-ao
+ !
+ address-family ipv4
+ exit-address-family
+ !
+ address-family vpnv4
+  neighbor rr-server-ao send-community extended
+  neighbor 172.30.1.0 activate
+  neighbor 172.30.10.0 activate
+ exit-address-family
+ !
+ address-family ipv4 vrf ess
+  redistribute connected
+  redistribute ospf 627 route-map ospf_vrf-to-bgp
+ exit-address-family
+ !
+ address-family ipv4 vrf haipe
+  redistribute connected
+ exit-address-family
+ !
+ address-family ipv4 vrf oobm
+  redistribute connected
+ exit-address-family
+ !
+ address-family ipv4 vrf angel
+  neighbor angel-route-server peer-group
+  neighbor angel-route-server remote-as 64999
+  neighbor angel-route-server timers 10 30
+  neighbor angel-route-server send-community
+  neighbor angel-route-server route-map rm-bgp-route-policy-out-ss_migration-v1 out
+  neighbor 10.{{ system.site_ip }}.229.11 peer-group angel-route-server
+  neighbor 10.{{ system.site_ip }}.229.11 disable-connected-check
+  neighbor 10.{{ system.site_ip }}.229.11 activate
+ exit-address-family
+ !
+ address-family ipv4 vrf internet
+  neighbor internet-common-internal peer-group
+  neighbor internet-common-internal timers 10 30
+  neighbor internet-common-internal send-community
+  neighbor internet-common-internal default-originate route-map rm-bgp-default-route
+  neighbor 10.{{ system.site_ip }}.229.19 remote-as 64902
+  neighbor 10.{{ system.site_ip }}.229.19 peer-group internet-common-internal
+  neighbor 10.{{ system.site_ip }}.229.19 ebgp-multihop 2
+  neighbor 10.{{ system.site_ip }}.229.19 activate
+ exit-address-family
+!
+route-map rm-bgp-default-route permit 10
+ set community 65000:6100
+route-map rm-bgp-route-policy-out-ss_migration-v1 permit 10
+ set community 65000:6100
+!
+!
+ip forward-protocol nd
+!
+no ip http server
+ip http authentication local
+no ip http secure-server
+ip http client source-interface GigabitEthernet1
+!
+ip route vrf internet 0.0.0.0 0.0.0.0 {{ isp_circuit_info.pe_gw_address }}
+ip route vrf oobm-int 0.0.0.0 0.0.0.0 172.17.{{ system.site_ip }}.1
+ip nat inside source list allow-nat interface GigabitEthernet2 vrf internet overload
+!
+!
+ip access-list standard allow-nat
+!
+!
+{% include ["wolfpack/common/pe_internet_in_acl.tera"] %}
+ip access-list extended {{ system.site }}-internet-in-v1
+ 10 deny ip object-group bogon object-group {{ system.site }}-wan log-input
+ 11 permit icmp any any packet-too-big
+ 12 permit icmp host 8.8.8.8 any log-input
+ 20 permit icmp any any time-exceeded log-input
+ 30 remark IPSEC_GRE_ESP_FROM remote-sites
+ 30 permit icmp object-group remote-sites object-group {{ system.site }}-wan
+ 40 permit esp object-group remote-sites object-group {{ system.site }}-wan
+ 50 permit udp object-group remote-sites object-group {{ system.site }}-wan eq isakmp
+ 60 permit gre object-group remote-sites object-group {{ system.site }}-wan
+ 70 remark DNS RETURN
+ 70 permit udp object-group dns eq domain object-group {{ system.site }}-wan
+ 80 remark SSH from other sites
+ 80 permit tcp object-group remote-sites object-group {{ system.site }}-wan eq 22
+ 81 permit ip object-group remote-sites object-group {{ system.site }}-wan
+ 90 remark NIST NTP RETURN
+ 90 permit udp object-group nist-ntp-servers eq ntp object-group {{ system.site }}-wan
+ 180 remark allow established
+ 180 permit tcp any any established
+ 190 deny ip any any log-input
+!
+route-map ospf_vrf-to-bgp deny 10
+ match tag 65000
+!
+route-map ospf_vrf-to-bgp permit 20
+!
+route-map static-to-ospf permit 10
+ match ip address prefix-list static-to-ospf
+!
+route-map static-to-ospf deny 20
+!
+!
+!
+!
+!
+!
+control-plane
+!
+!
+{% include ["ios-xe_common/line_info.tera"] %}
+{% include ["ios-xe_common/ssh.tera"] %}

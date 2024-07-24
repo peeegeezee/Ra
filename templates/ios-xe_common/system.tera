@@ -1,0 +1,32 @@
+logging userinfo
+ip domain name netops.{{ system.domain }}
+ip name-server 10.255.255.253 10.255.255.254
+!
+!
+login on-success log
+login on-failure log
+!
+archive
+ log config
+  logging enable
+!
+!
+enable secret 8 $8$.25c1UrZbcwVIU$ze6hzWuKURIHYe5gwIWH9VjituFRD0qLLRFOsaCKkgg
+!
+!
+!
+!
+ip forward-protocol nd
+no ip http server
+no ip http secure-server
+!
+!
+login delay 1
+!
+!
+no ip source-route
+no ipv6 source-route
+!
+logging buffered 88888888 informational
+!
+login block-for 900 attempts 3 within 120

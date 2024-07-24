@@ -1,0 +1,23 @@
+!
+route-map all permit 10
+route-map ospf-external permit 10
+  match route-type external
+  set distance 5
+!
+router ospf 1
+  router-id {{ system.router_id }}
+  redistribute bgp 65101 route-map all
+  table-map ospf-external
+  no discard-route external
+!
+router bgp 65101
+  router-id {{ system.router_id }}
+  log-neighbor-changes
+  address-family ipv4 unicast
+  neighbor 10.{{ system.site_ip }}.8.4
+    remote-as 65200
+    address-family ipv4 unicast
+  neighbor 10.{{ system.site_ip }}.8.5
+    remote-as 65200
+    address-family ipv4 unicast
+!

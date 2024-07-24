@@ -1,0 +1,17 @@
+object-group network bulkvs
+ host 162.249.171.198
+ host 76.8.29.198
+ host 69.12.88.198
+ host 199.255.157.198
+!
+object-group network twillio-regional-global
+ 168.86.128.0 255.255.192.0
+!
+object-group network twillio-regional-media
+ 54.244.51.0 255.255.255.0
+ 54.172.60.0 255.255.254.0
+ 34.203.250.0 255.255.254.0
+!
+object-group network twillio-regional-sip
+ 54.172.60.0 255.255.255.252
+ 54.244.51.0 255.255.255.252

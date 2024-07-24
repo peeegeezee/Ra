@@ -1,0 +1,917 @@
+{
+  "system": {
+    "domain": "{{ domain }}",
+    "instance": "001",
+    "site": "{{ site }}",
+    "site_ip": "{{ site_ip }}",
+    "router_id": "172.30.{{ site_ip }}.0/32"
+  },
+  "vlans": [
+    {
+      "name": "v3.net_native",
+      "id": 3
+    },
+    {
+      "name": "v4.vmh_native",
+      "id": 4
+    },
+    {
+      "name": "v999.dead-data",
+      "id": 999
+    },
+    {
+      "name": "v3001.{{ site }}-sds-tr",
+      "id": 3001
+    },
+    {
+      "name": "v3002.{{ site }}-vmotion-tr",
+      "id": 3002
+    },
+    {
+      "name": "v3900.{{ site }}-t0srv-tr",
+      "id": 3900
+    },
+    {
+      "name": "v3901.{{ site }}-t1srv-tr",
+      "id": 3901
+    },
+    {
+      "name": "v3902.{{ site }}-ia-tr",
+      "id": 3902
+    },
+    {
+      "name": "v3903.{{ site }}-uc-tr",
+      "id": 3903
+    },
+    {
+      "name": "v3904.{{ site }}-templ-tr",
+      "id": 3904
+    },
+    {
+      "name": "v3905.{{ site }}-usr-tr",
+      "id": 3905
+    },
+    {
+      "name": "v3906.{{ site }}-t0usr-paw",
+      "id": 3906
+    },
+    {
+      "name": "v3907.{{ site }}-t1usr-paw",
+      "id": 3907
+    },
+    {
+      "name": "v3908.{{ site }}-t2usr-paw",
+      "id": 3908
+    },
+    {
+      "name": "v3909.{{ site }}-netusr-paw",
+      "id": 3909
+    },
+    {
+      "name": "v3910.{{ site }}-netsrv-mgt",
+      "id": 3910
+    },
+    {
+      "name": "v3800.{{ site }}-core-ptp",
+      "id": 3800
+    },
+    {
+      "name": "v3801.{{ site }}-svc-ptp",
+      "id": 3801
+    },
+    {
+      "name": "v3803.{{ site }}-svc-ptp",
+      "id": 3803
+    },
+    {
+      "name": "v3806.{{ site }}-an-ptp",
+      "id": 3806
+    }
+  ],
+  "interfaces": [
+    {
+      "name": "Ethernet1/1",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/2",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/3",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/4",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/5",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/6",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/7",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/8",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/9",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/10",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/11",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/12",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/13",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/14",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/15",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/16",
+      "description": "vSAN Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/17",
+      "description": "Standalone Host",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910",
+          "native_vlan": "4"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "Ethernet1/18",
+      "description": "NOT IN USE",
+      "shutdown": true,
+      "switchport": {
+        "mode": "Access",
+        "access": {
+          "vlan": "999"
+        }
+      }
+    },
+    {
+      "name": "Ethernet1/19",
+      "description": "NOT IN USE",
+      "shutdown": true,
+      "switchport": {
+        "mode": "Access",
+        "access": {
+          "vlan": "999"
+        }
+      }
+    },
+    {
+      "name": "Ethernet1/20",
+      "description": "NOT IN USE",
+      "shutdown": true,
+      "switchport": {
+        "mode": "Access",
+        "access": {
+          "vlan": "999"
+        }
+      }
+    },
+    {
+      "name": "Ethernet1/21",
+      "description": "NOT IN USE",
+      "shutdown": true,
+      "switchport": {
+        "mode": "Access",
+        "access": {
+          "vlan": "999"
+        }
+      }
+    },
+    {
+      "name": "Ethernet1/22",
+      "description": "NOT IN USE",
+      "shutdown": true,
+      "switchport": {
+        "mode": "Access",
+        "access": {
+          "vlan": "999"
+        }
+      }
+    },
+    {
+      "name": "Ethernet1/23",
+      "description": "NOT IN USE",
+      "shutdown": true,
+      "switchport": {
+        "mode": "Access",
+        "access": {
+          "vlan": "999"
+        }
+      }
+    },
+    {
+      "name": "Ethernet1/24",
+      "description": "NOT IN USE",
+      "shutdown": true,
+      "switchport": {
+        "mode": "Access",
+        "access": {
+          "vlan": "999"
+        }
+      }
+    },
+    {
+      "name": "Ethernet1/25",
+      "description": "Uplink to DC-COR-002",
+      "shutdown": false,
+      "channel_group": "1",
+      "mtu": "9216"
+    },
+    {
+      "name": "Ethernet1/26",
+      "description": "Uplink to DC-COR-002",
+      "shutdown": false,
+      "channel_group": "1",
+      "mtu": "9216"
+    },
+    {
+      "name": "Ethernet1/27",
+      "description": "Uplink to DC-COR-002",
+      "shutdown": false,
+      "channel_group": "1",
+      "mtu": "9216"
+    },
+    {
+      "name": "Ethernet1/28",
+      "description": "Uplink to DC-COR-002",
+      "shutdown": false,
+      "channel_group": "1",
+      "mtu": "9216"
+    },
+    {
+      "name": "Ethernet1/29",
+      "description": "NOT IN USE",
+      "shutdown": true,
+      "switchport": {
+        "mode": "Access",
+        "access": {
+          "vlan": "999"
+        }
+      }
+    },
+    {
+      "name": "Ethernet1/30",
+      "description": "Routed Trunk to AN-001",
+      "shutdown": false,
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "native_vlan": "3",
+          "allowed_vlans": "3806"
+        }
+      }
+    },
+    {
+      "name": "Ethernet1/31",
+      "description": "Routed Trunk to DC-SVC-001",
+      "shutdown": false,
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "native_vlan": "3",
+          "allowed_vlans": "3801"
+        }
+      }
+    },
+    {
+      "name": "Ethernet1/32",
+      "description": "Routed Trunk to DC-SVC-002",
+      "shutdown": false,
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "native_vlan": "3",
+          "allowed_vlans": "3803"
+        }
+      }
+    },
+    {
+      "name": "port-channel1",
+      "description": "Inter-Nodal Link DC-CORs",
+      "switchport": {
+        "mode": "Trunk",
+        "trunk": {
+          "allowed_vlans": "3001-3002,3900-3910,3800",
+          "native_vlan": "3"
+        }
+      },
+      "mtu": "9216",
+      "service_policies": {
+        "qos": {
+          "input": "ROCE_POLICY"
+        },
+        "queuing": {
+          "output": "ROCE_QUEUING_OUT"
+        }
+      },
+      "shutdown": false
+    },
+    {
+      "name": "loopback0",
+      "description": "router-id for routing",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.1",
+        "passive": true
+      },
+      "ip_address": "172.30.{{ site_ip }}.0/32"
+    },
+    {
+      "name": "Vlan3900",
+      "description": "Tier 0 Servers",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.8.2/26",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.8.1"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3901",
+      "description": "Tier 1 Servers",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.8.66/26",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.8.65"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3902",
+      "description": "IA Servers",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.8.130/26",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.8.129"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3903",
+      "description": "UC Servers",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.8.194/26",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.8.193"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3904",
+      "description": "IA Servers",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.9.2/24",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.9.1"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3905",
+      "description": "VDI USER VMs",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.10.2/26",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.10.1"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3906",
+      "description": "Tier 0 PAW VM",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.11.2/26",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.11.1"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3907",
+      "description": "Tier 1 PAW VMs",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.11.66/26",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.11.65"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3908",
+      "description": "Tier 2 PAW VMs",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.11.130/26",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.11.129"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3909",
+      "description": "NET PAW VMs",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.11.194/26",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.11.193"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3910",
+      "description": "NET Servers",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.12.1/24",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.12.1"
+      },
+      "dhcp_relays": [
+        "10.{{ site_ip }}.8.68",
+        "10.{{ site_ip }}.8.69"
+      ]
+    },
+    {
+      "name": "Vlan3001",
+      "description": "SDS Network",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.221.2/24",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.221.1"
+      }
+    },
+    {
+      "name": "Vlan3002",
+      "description": "vMotion Network",
+      "shutdown": false,
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "passive": true
+      },
+      "ip_address": "10.{{ site_ip }}.222.2/24",
+      "vrrp": {
+        "group": "1",
+        "primary_address": "10.{{ site_ip }}.222.1"
+      }
+    },
+    {
+      "name": "Vlan3800",
+      "description": "Routed Link to DC-COR-002",
+      "shutdown": false,
+      "ip_address": "10.{{ site_ip }}.240.0/31",
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "network_type": "ptp"
+      }
+    },
+    {
+      "name": "Vlan3801",
+      "description": "Routed Link to DC-SVC-002",
+      "shutdown": false,
+      "ip_address": "10.{{ site_ip }}.240.2/31",
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "network_type": "ptp"
+      }
+    },
+    {
+      "name": "Vlan3803",
+      "description": "Routed Link to DC-SVC-002",
+      "shutdown": false,
+      "ip_address": "10.{{ site_ip }}.240.6/31",
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "network_type": "ptp"
+      }
+    },
+    {
+      "name": "Vlan3806",
+      "description": "Routed Link to DC-AN-001",
+      "shutdown": false,
+      "ip_address": "10.{{ site_ip }}.240.12/31",
+      "ospf": {
+        "instance": "1",
+        "area": "0.0.0.{{ site_ip }}",
+        "network_type": "ptp"
+      }
+    }
+  ]
+}

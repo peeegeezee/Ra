@@ -1,0 +1,91 @@
+!
+class-map match-any PQ1
+ match dscp ef
+ match dscp 47
+class-map match-any PQ2
+ match dscp cs4
+ match dscp cs5
+class-map match-any CONTROL-MGMT-QUEUE
+ match dscp cs7
+ match dscp cs6
+ match dscp cs3
+ match dscp cs2
+class-map match-any AF4-QUEUE
+ match dscp af41
+ match dscp af42
+ match dscp af43
+class-map match-any AF3-QUEUE
+ match dscp af31
+ match dscp af32
+ match dscp af33
+class-map match-any AF2-QUEUE
+ match dscp af21
+ match dscp af22
+ match dscp af23
+class-map match-any SCAVENGER-BULK-DATA-QUEUE
+ match dscp af11
+ match dscp af12
+ match dscp af13
+ match dscp cs1
+!
+ip access-list extended marking-vdi
+ permit tcp any any eq 4172
+ permit udp any any eq 4172
+!
+class-map match-all marking-haipe
+ match vlan 619
+!
+class-map match-any marking-vdi
+ match access-group name marking-vdi
+!
+policy-map marking
+ class marking-haipe
+  set dscp 47
+ class marking-vdi
+  set dscp af41
+!
+!
+policy-map 2P6Q3T-WRED
+ class PQ1
+  priority level 1
+  police rate percent 10
+  queue-buffers ratio 5
+ class PQ2
+  priority level 2
+  police rate percent 23
+  queue-buffers ratio 5
+ class CONTROL-MGMT-QUEUE
+  bandwidth remaining percent 10
+  queue-buffers ratio 5
+ class AF4-QUEUE
+  bandwidth remaining percent 15
+  queue-buffers ratio 15
+  queue-limit dscp af43 percent 80
+  queue-limit dscp af42 percent 90
+ class AF3-QUEUE
+  bandwidth remaining percent 15
+  queue-buffers ratio 10
+  queue-limit dscp af33 percent 80
+  queue-limit dscp af32 percent 90
+ class AF2-QUEUE
+  bandwidth remaining percent 15
+  queue-buffers ratio 10
+  random-detect dscp-based
+  random-detect dscp af21 percent 80 100
+  random-detect dscp af22 percent 70 100
+  random-detect dscp af23 percent 60 100
+ class SCAVENGER-BULK-DATA-QUEUE
+  bandwidth remaining percent 7
+  queue-buffers ratio 10
+  random-detect dscp-based
+  random-detect dscp 8 percent 60 100
+  random-detect dscp 10 percent 80 100
+  random-detect dscp 12 percent 70 100
+  random-detect dscp 14 percent 60 100
+ class class-default
+  bandwidth remaining percent 38
+  queue-buffers ratio 25
+  random-detect dscp-based
+  random-detect dscp default percent 80 100
+!
+!

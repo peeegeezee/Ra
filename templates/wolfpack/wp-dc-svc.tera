@@ -1,0 +1,80 @@
+{% include ["ios-xe_common/services.tera"] %}
+!
+hostname {{ system.site | lower }}-dc-srv-001s
+!
+system mtu 9216
+!
+{% include ["ios-xe_common/pre_aaa.tera"] %}
+!
+aaa group server radius noc
+{% include ["ios-xe_common/radius_servers.tera"] %}
+ ip vrf forwarding oobm-int
+ ip radius source-interface GigabitEthernet1
+!
+aaa group server tacacs+ noc-auth
+{% include ["ios-xe_common/tacacs_servers.tera"] %}
+ ip vrf forwarding oobm-int
+ ip tacacs source-interface GigabitEthernet1
+!
+{% include ["ios-xe_common/post_aaa.tera"] %}
+!
+no ip gratuitous-arps
+!
+{% include ["ios-xe_common/system.tera"] %}
+!
+stackwise-virtual
+ domain 10
+!
+license boot level network-advantage addon dna-advantage
+!
+spanning-tree mode rapid-pvst
+spanning-tree extend system-id
+!
+transceiver type all
+ monitoring
+!
+{%- for vlan in vlans %}
+vlan {{ vlan.id }}
+ name v{{vlan.id }}.{{ system.site | lower }}-{{ vlan.name }}
+{%- endfor %}
+!
+{% include ["ios-xe_common/qos-switches.tera"] %}
+!
+{%- for interface in interfaces %}
+{%- if interface.range %}
+interface range {{ interface.name }}
+{%- else %}
+interface {{ interface.name }}
+{%- endif %}
+ description {{ interface.description }}
+ {%- if interface.switchport %}
+ switchport
+ switchport mode {{ interface.switchport.mode }}
+ {%- endif -%}
+ {%- if interface.switchport.access %}
+ switchport access vlan {{ interface.switchport.access.vlan }}
+ {%- endif -%}
+ {%- if interface.mtu %}
+ mtu {{ interface.mtu }}
+ {%- endif -%}
+ {%- if interface.ip_address %}
+ no switchport
+ ip address {{ interface.ip_address }}
+ {%- endif -%}
+ {%- if interface.ospf %}
+ ip ospf {{ interface.ospf.instance }} area {{ interface.ospf.area }}
+ {%- endif -%}
+{%- endfor %}
+!
+router ospf 1
+!
+ip access-list extended marking-vdi
+ 10 permit tcp any any eq 4172
+ 20 permit udp any any eq 4172
+!
+control-plane
+ service-policy input system-cpp-policy
+!
+!
+{% include ["ios-xe_common/line_info.tera"] %}
+{% include ["ios-xe_common/ssh.tera"] %}

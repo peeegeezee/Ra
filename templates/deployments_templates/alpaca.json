@@ -1,0 +1,24 @@
+{
+  "main": {
+    "site": "E08",
+    "site_ip": "8",
+    "domain": "angel.net"
+  },
+  "devices": [
+    {
+      "name": "DC-COR-001",
+      "template": "dc-cor",
+      "fabric": "alpaca"
+    },
+    {
+      "name": "DC-COR-002",
+      "template": "dc-cor",
+      "fabric": "alpaca"
+    },
+    {
+      "name": "DC-SVC-001",
+      "template": "dc-svc",
+      "fabric": "alpaca"
+    }
+  ]
+}

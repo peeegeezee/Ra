@@ -1,0 +1,49 @@
+!
+ip access-list extended allow-vvoip
+ permit ip 10.0.2.0 0.255.0.255
+!
+service-template allow-vvoip
+ access-group allow-vvoip
+!
+policy-map type control subscriber DOT1X-DEFAULT
+ event session-started match-all
+  10 class always do-all
+   10 authenticate using dot1x priority 10
+   20 authenticate using mab priority 20
+ event violation match-all
+  10 class always do-all
+   10 restrict
+ event agent-found match-all
+  10 class always do-all
+   10 authenticate using dot1x
+ event authentication-failure match-all
+  10 class AAA-DOWN do-all
+   10 authorize
+   20 activate service-template allow-vvoip
+   30 terminate dot1x
+   40 terminate mab
+  20 class DOT1X-FAILED do-all
+   10 authenticate using mab
+!
+!
+template dot1x
+ storm-control broadcast level pps 1k
+ storm-control action shutdown
+ spanning-tree portfast edge
+ spanning-tree bpduguard enable
+ spanning-tree guard root
+ switchport access vlan 15
+ switchport mode access
+ switchport voice vlan 16
+ service-policy input MARKING
+ service-policy output 2P6Q3T-WRED
+ service-policy type control subscriber DOT1X-DEFAULT
+ description DOT1X
+template uplink
+ ip dhcp snooping trust
+ ip arp inspection trust
+ spanning-tree portfast netwrok
+ switchport mode trunk
+ switchport native vlan 3
+ service-policy output 2P6Q3T-WRED
+!
